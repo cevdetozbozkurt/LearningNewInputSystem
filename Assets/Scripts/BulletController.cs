@@ -13,6 +13,11 @@ public class BulletController : MonoBehaviour
         
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(DestroyBulletAfterTime());
+    }
+
     IEnumerator DestroyBulletAfterTime()
     {
         yield return new WaitForSeconds(3f);
@@ -23,8 +28,5 @@ public class BulletController : MonoBehaviour
         transform.Translate(speed * Time.deltaTime * transform.up, Space.World);    
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Destroy(gameObject);
-    }
+
 }

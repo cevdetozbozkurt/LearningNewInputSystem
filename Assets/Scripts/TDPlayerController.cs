@@ -8,7 +8,7 @@ public class TDPlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletDirection;
-    
+    [SerializeField] private float movementVelocity = 3f;
 
     private TDActions controls;
     private bool canShoot = true;
@@ -39,8 +39,8 @@ public class TDPlayerController : MonoBehaviour
     {
         if(!canShoot) return;
         Vector2 mousePosition = controls.Player.MousePosition.ReadValue<Vector2>();
-        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        GameObject g = Instantiate(bullet, bulletDirection.position, bulletDirection.rotation, transform);
+        mousePosition = mainCamera.ScreenToWorldPoint(mousePosition);
+        GameObject g = Instantiate(bullet, bulletDirection.position, bulletDirection.rotation);
         g.SetActive(true);
         StartCoroutine(CanShoot());
     }
@@ -48,17 +48,20 @@ public class TDPlayerController : MonoBehaviour
     IEnumerator CanShoot()
     {
         canShoot = false;
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.2f);
         canShoot = true;
     }
     
     void Update()
     {
+        //Rotation
         Vector2 mouseScreenPosition = controls.Player.MousePosition.ReadValue<Vector2>();
         Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(mouseScreenPosition);
         Vector3 targetDirection = mouseWorldPosition - transform.position;
-        float angle = Mathf.Atan2(targetDirection.y, targetDirection.x);
+        float angle = Mathf.Atan2(targetDirection.y, targetDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(new Vector3(0f,0f,angle));
-        
+        //Movement
+        Vector3 movement = controls.Player.Movement.ReadValue<Vector2>() * movementVelocity;
+        transform.position += Time.deltaTime * movement;
     }
 }
