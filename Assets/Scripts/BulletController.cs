@@ -1,16 +1,15 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
     [SerializeField] private float speed = 4f;
+    [SerializeField] private GameManager gm;
 
-    void Start()
+    private void Start()
     {
-        
+        gm = GetComponent<GameManager>();
     }
 
     private void OnEnable()
@@ -18,9 +17,19 @@ public class BulletController : MonoBehaviour
         StartCoroutine(DestroyBulletAfterTime());
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Destroy(other.gameObject);
+            Destroy(this.gameObject);
+            gm.Score++;
+        }
+    }
+
     IEnumerator DestroyBulletAfterTime()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
     void Update()

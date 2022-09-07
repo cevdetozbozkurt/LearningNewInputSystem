@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 public class TDPlayerController : MonoBehaviour
@@ -9,6 +6,7 @@ public class TDPlayerController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletDirection;
     [SerializeField] private float movementVelocity = 3f;
+    [SerializeField] private GameObject _bullets;
 
     private TDActions controls;
     private bool canShoot = true;
@@ -40,7 +38,7 @@ public class TDPlayerController : MonoBehaviour
         if(!canShoot) return;
         Vector2 mousePosition = controls.Player.MousePosition.ReadValue<Vector2>();
         mousePosition = mainCamera.ScreenToWorldPoint(mousePosition);
-        GameObject g = Instantiate(bullet, bulletDirection.position, bulletDirection.rotation);
+        GameObject g = Instantiate(bullet, bulletDirection.position, bulletDirection.rotation, _bullets.transform);
         g.SetActive(true);
         StartCoroutine(CanShoot());
     }
